@@ -1153,7 +1153,10 @@ impl Drop for UnownedWindow {
         trace!("Dropping `UnownedWindow` ({:?})", self as *mut _);
         // Close the window if it has not yet been closed.
         if *self.ns_window != nil {
-            unsafe { util::close_async(*self.ns_window) };
+            unsafe {
+                let _ = (*self.ns_window).delegate();
+                util::close_async(*self.ns_window);
+            };
         }
     }
 }
